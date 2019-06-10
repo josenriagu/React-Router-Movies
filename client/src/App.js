@@ -19,7 +19,7 @@ export default class App extends Component {
     if (!alreadyOnTheList) {
       savedList.push(movieToSave);
       this.setState({ savedList });
-    }
+    } else alert("This movie is already saved by you. Here's a pony!")
   };
 
   render() {

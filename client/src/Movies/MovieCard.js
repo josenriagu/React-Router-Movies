@@ -2,10 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const MovieCard = ({ movie }) => {
-  const { title, director, metascore, stars } = movie;
+  const { id, title, director, metascore, stars } = movie;
   return (
     <Link className='link card-link' to={`/movies/${movie.id}`}>
-      <div className="movie-card">
+      <div key={id} className="movie-card">
         <h2>{title}</h2>
         <div className="movie-director">
           Director: <em>{director}</em>

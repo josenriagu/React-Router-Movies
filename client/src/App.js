@@ -12,20 +12,34 @@ export default class App extends Component {
       savedList: []
     };
   }
+  componentDidMount() {
+    // check if there are saved movies and load onto state
+    const saved = JSON.parse(localStorage.getItem('saved'));
+    if (saved) {
+      this.setState({ ...this.state, savedList: saved });
+    }
+  }
 
   addToSavedList = movieToSave => {
     const savedList = this.state.savedList;
     const alreadyOnTheList = savedList.find(movie => movieToSave.id === movie.id)
     if (!alreadyOnTheList) {
       savedList.push(movieToSave);
-      this.setState({ savedList });
+      this.setState({ ...this.state, savedList: savedList });
+      // save to localStorage
+      localStorage.setItem('saved', JSON.stringify(this.state.savedList));
     } else alert("This movie is already saved by you. Here's a pony!")
   };
+
+  clearSavedList = () => {
+    this.setState({ ...this.state, savedList: [] });
+    localStorage.clear();
+  }
 
   render() {
     return (
       <div>
-        <SavedList list={this.state.savedList} />
+        <SavedList clearSavedList={this.clearSavedList} list={this.state.savedList} />
         <Route
           exact
           path='/'

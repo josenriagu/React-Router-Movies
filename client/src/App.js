@@ -1,55 +1,44 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { Route } from 'react-router-dom';
 
 import SavedList from './Movies/SavedList';
 import MovieList from './Movies/MovieList';
 import Movie from './Movies/Movie';
 
-export default class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      savedList: []
-    };
-  }
-  componentDidMount() {
-    // check if there are saved movies and load onto state
-    const saved = JSON.parse(localStorage.getItem('saved'));
-    if (saved) {
-      this.setState({ ...this.state, savedList: saved });
-    }
-  }
+const App = () => {
+  let [savedList, updateSavedList] = useState(JSON.parse(localStorage.getItem('saved')) || []);
 
-  addToSavedList = movieToSave => {
-    const savedList = this.state.savedList;
-    const alreadyOnTheList = savedList.find(movie => movieToSave.id === movie.id)
+  const addToSavedList = movieToSave => {
+    const alreadyOnTheList = savedList.find(movie => {
+      return movieToSave.id === movie.id
+    })
     if (!alreadyOnTheList) {
-      savedList.push(movieToSave);
-      this.setState({ ...this.state, savedList: savedList });
+      const newSavedList = savedList.concat(movieToSave);
+      updateSavedList(newSavedList)
       // save to localStorage
-      localStorage.setItem('saved', JSON.stringify(this.state.savedList));
+      localStorage.setItem('saved', JSON.stringify(newSavedList));
     } else alert("This movie is already saved by you. Here's a pony!")
   };
 
-  clearSavedList = () => {
-    this.setState({ ...this.state, savedList: [] });
+  const clearSavedList = () => {
+    updateSavedList([])
     localStorage.clear();
   }
 
-  render() {
-    return (
-      <div>
-        <SavedList clearSavedList={this.clearSavedList} list={this.state.savedList} />
-        <Route
-          exact
-          path='/'
-          component={MovieList}
-        />
-        <Route
-          path='/movies/:id'
-          render={(props) => <Movie {...props} addToSavedList={this.addToSavedList} />}
-        />
-      </div>
-    );
-  }
+  return (
+    <div>
+      <SavedList clearSavedList={clearSavedList} list={savedList} />
+      <Route
+        exact
+        path='/'
+        component={MovieList}
+      />
+      <Route
+        path='/movies/:id'
+        render={(props) => <Movie {...props} addToSavedList={addToSavedList} />}
+      />
+    </div>
+  );
 }
+
+export default App;

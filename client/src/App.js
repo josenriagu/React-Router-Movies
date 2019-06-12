@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Route } from 'react-router-dom';
 
 import SavedList from './Movies/SavedList';
 import MovieList from './Movies/MovieList';
 import Movie from './Movies/Movie';
 
-const App = props => {
+const App = () => {
   let [savedList, updateSavedList] = useState(JSON.parse(localStorage.getItem('saved')) || []);
 
   const addToSavedList = movieToSave => {
